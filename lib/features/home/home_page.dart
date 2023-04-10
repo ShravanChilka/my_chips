@@ -24,6 +24,7 @@ class HomePage extends StatelessWidget {
             ChipView<ChipViewModelLanguages>(
               viewModel: ChipViewModelLanguages(),
             ),
+            TextField(),
           ],
         ),
       ),

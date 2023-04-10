@@ -24,7 +24,7 @@ abstract class ChipViewModel extends ChangeNotifier {
       _all.addAll(data);
       notifyListeners();
     } on RemoteException catch (e) {
-      log(e.toString());
+      log(e.error.toString());
     }
   }
 
