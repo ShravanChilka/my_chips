@@ -2,8 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/src/rendering/box.dart';
-import 'package:flutter/src/rendering/stack.dart';
 
 class CustomStack extends Stack {
   CustomStack({
@@ -33,9 +31,9 @@ class CustomRenderStack extends RenderStack {
     super.fit,
   });
 
-  // @override
-  // bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
-  //   result.add(BoxHitTestEntry(this, position));
-  //   return true;
-  // }
+  @override
+  bool hitTest(BoxHitTestResult result, {required Offset position}) {
+    if (hitTestChildren(result, position: position)) {}
+    return super.hitTest(result, position: position);
+  }
 }

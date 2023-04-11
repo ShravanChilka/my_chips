@@ -6,10 +6,8 @@ import 'package:my_chips/features/chip/view_model/chip_view_model.dart';
 import 'package:provider/provider.dart';
 
 class SuggestionBuilder<T extends ChipViewModel> extends StatefulWidget {
-  final T viewModel;
   const SuggestionBuilder({
     Key? key,
-    required this.viewModel,
   }) : super(key: key);
 
   @override
@@ -68,7 +66,7 @@ class _SuggestionBuilderState<T extends ChipViewModel>
                 controller: _scrollController,
                 child: Row(
                   children: [
-                    SelectedBuilder<T>(viewModel: widget.viewModel),
+                    SelectedBuilder<T>(),
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: RawKeyboardListener(
@@ -101,19 +99,24 @@ class _SuggestionBuilderState<T extends ChipViewModel>
             );
           },
           optionsViewBuilder: (context, onSelected, options) {
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: options.length,
-              itemBuilder: (context, index) {
-                return Material(
-                  child: ListTile(
-                    onTap: () => onSelected(
-                      options.elementAt(index),
+            return Container(
+              color: Colors.red,
+              width: 200,
+              height: 200,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: options.length,
+                itemBuilder: (context, index) {
+                  return Material(
+                    child: ListTile(
+                      onTap: () => onSelected(
+                        options.elementAt(index),
+                      ),
+                      title: Text(options.elementAt(index).value),
                     ),
-                    title: Text(options.elementAt(index).value),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             );
           },
           optionsBuilder: (textEditingValue) {

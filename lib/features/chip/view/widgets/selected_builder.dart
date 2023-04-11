@@ -4,10 +4,8 @@ import 'package:my_chips/features/chip/view/widgets/chip_widget.dart';
 import 'package:my_chips/features/chip/view_model/chip_view_model.dart';
 
 class SelectedBuilder<T extends ChipViewModel> extends StatelessWidget {
-  final T viewModel;
   const SelectedBuilder({
     Key? key,
-    required this.viewModel,
   }) : super(key: key);
 
   @override

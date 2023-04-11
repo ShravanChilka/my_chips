@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_chips/core/errors/errors.dart';
 import 'package:my_chips/features/chip/models/chip_model.dart';
@@ -49,10 +48,8 @@ abstract class ChipViewModel extends ChangeNotifier {
 
   void focusEvents(FocusNode focusNode) {
     if (focusNode.hasFocus) {
-      log('focused');
       _isFocused = true;
     } else {
-      log('not focused');
       _isFocused = false;
     }
     notifyListeners();
