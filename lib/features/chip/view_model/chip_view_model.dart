@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:my_chips/core/errors/errors.dart';
 import 'package:my_chips/features/chip/models/chip_model.dart';
 import 'package:my_chips/features/chip/web_services/chip_web_service.dart';
@@ -8,6 +9,7 @@ abstract class ChipViewModel extends ChangeNotifier {
   final List<ChipModel> _selected = [];
   final List<ChipModel> _nonSelected = [];
   final List<ChipModel> _all = [];
+  bool _isFocused = false;
 
   final ChipWebService _service;
   ChipViewModel({
@@ -31,6 +33,7 @@ abstract class ChipViewModel extends ChangeNotifier {
   List<ChipModel> get selected => _selected;
   List<ChipModel> get nonSelected => _nonSelected;
   List<ChipModel> get all => _all;
+  bool get isFocused => _isFocused;
 
   void selectedEvent(ChipModel value) {
     _nonSelected.remove(value);
@@ -41,6 +44,17 @@ abstract class ChipViewModel extends ChangeNotifier {
   void removeEvent(ChipModel value) {
     _selected.remove(value);
     _nonSelected.add(value);
+    notifyListeners();
+  }
+
+  void focusEvents(FocusNode focusNode) {
+    if (focusNode.hasFocus) {
+      log('focused');
+      _isFocused = true;
+    } else {
+      log('not focused');
+      _isFocused = false;
+    }
     notifyListeners();
   }
 }

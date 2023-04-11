@@ -37,18 +37,16 @@ class _SuggestionBuilderState<T extends ChipViewModel>
     return Consumer<T>(
       builder: (context, value, child) {
         return Autocomplete(
-          optionsMaxHeight: 0.00,
+          optionsMaxHeight: 200,
           onSelected: (selectedChip) {
             value.selectedEvent(selectedChip);
             _scrollController.animateTo(
-              _scrollController.position.maxScrollExtent,
+              _scrollController.position.maxScrollExtent * 0.6,
               duration: const Duration(milliseconds: 400),
               curve: Curves.fastOutSlowIn,
             );
           },
-          displayStringForOption: (option) {
-            return '';
-          },
+          displayStringForOption: (option) => '',
           fieldViewBuilder: (
             context,
             textEditingController,
@@ -103,24 +101,19 @@ class _SuggestionBuilderState<T extends ChipViewModel>
             );
           },
           optionsViewBuilder: (context, onSelected, options) {
-            return Container(
-              color: Colors.red,
-              constraints: const BoxConstraints(maxHeight: 100, minHeight: 100),
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: options.length,
-                itemBuilder: (context, index) {
-                  return Material(
-                    child: ListTile(
-                      tileColor: Colors.amber,
-                      onTap: () {
-                        value.selectedEvent(options.elementAt(index));
-                      },
-                      title: Text(options.elementAt(index).value),
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: options.length,
+              itemBuilder: (context, index) {
+                return Material(
+                  child: ListTile(
+                    onTap: () => onSelected(
+                      options.elementAt(index),
                     ),
-                  );
-                },
-              ),
+                    title: Text(options.elementAt(index).value),
+                  ),
+                );
+              },
             );
           },
           optionsBuilder: (textEditingValue) {

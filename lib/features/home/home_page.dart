@@ -16,15 +16,14 @@ class HomePage extends StatelessWidget {
           children: [
             const SizedBox(height: defaultPadding),
             const Text('Select Frameworks'),
-            ChipView<ChipViewModelFrameworks>(
-              viewModel: ChipViewModelFrameworks(),
-            ),
-            const SizedBox(height: defaultPadding),
-            const Text('Select Languages'),
-            ChipView<ChipViewModelLanguages>(
-              viewModel: ChipViewModelLanguages(),
-            ),
-            TextField(),
+            ChipView<ChipViewModelFrameworks>(),
+            // const SizedBox(height: defaultPadding * 2),
+            // const Text('Select Languages'),
+            // ChipView<ChipViewModelLanguages>(),
+            // ChipView<ChipViewModelLanguages>(
+            //   viewModel: ChipViewModelLanguages(),
+            // ),
+            // TextField(),
           ],
         ),
       ),
