@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:my_chips/config/styles.dart';
 import 'package:my_chips/features/chip/view/chip_view.dart';
+import 'package:my_chips/features/chip/view/widgets/auto_suggession_builder.dart';
 import 'package:my_chips/features/chip/view_model/chip_view_model.dart';
 
 class HomePage extends StatelessWidget {
@@ -11,12 +13,16 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.amber.shade100,
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            TestWidget(),
-            SizedBox(height: 100),
-            ChipView<ChipViewModelFrameworks>(),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(defaultPadding),
+          child: Column(
+            children: const [
+              SizedBox(height: 100),
+              AutoSuggessionBuilder<ChipViewModelFrameworks>(),
+              SizedBox(height: 100),
+              AutoSuggessionBuilder<ChipViewModelLanguages>(),
+            ],
+          ),
         ),
       ),
     );

@@ -13,6 +13,7 @@ class SelectedBuilder<T extends ChipViewModel> extends StatelessWidget {
     return Consumer<T>(
       builder: (context, value, child) {
         return Wrap(
+          clipBehavior: Clip.hardEdge,
           children: value.selected
               .map(
                 (e) => Padding(

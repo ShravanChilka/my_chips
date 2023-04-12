@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_chips/core/errors/errors.dart';
 import 'package:my_chips/features/chip/models/chip_model.dart';
 import 'package:my_chips/features/chip/web_services/chip_web_service.dart';
@@ -44,6 +45,32 @@ abstract class ChipViewModel extends ChangeNotifier {
   void removeEvent(ChipModel value) {
     _selected.remove(value);
     _nonSelected.add(value);
+    notifyListeners();
+  }
+
+  void onRawKeyEvent(
+    RawKeyEvent keyEvent,
+    TextEditingController controller,
+  ) {
+    if (keyEvent.isKeyPressed(
+      LogicalKeyboardKey.backspace,
+    )) {
+      if (controller.text.isEmpty && selected.isNotEmpty) {
+        removeEvent(selected.last);
+      }
+    }
+  }
+
+  void onTextChangeEvent(
+    String value,
+  ) {
+    _nonSelected.clear();
+    _nonSelected.addAll(
+      _nonSelected
+          .where((element) =>
+              element.value.toLowerCase().contains(value.toLowerCase()))
+          .toList(),
+    );
     notifyListeners();
   }
 

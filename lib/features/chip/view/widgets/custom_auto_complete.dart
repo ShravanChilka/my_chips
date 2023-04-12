@@ -8,6 +8,7 @@ class CustomAutoComplete extends StatefulWidget {
     BuildContext context,
     OverlayEntry entry,
     void Function(OverlayEntry entry) onSelected,
+    FocusNode focusNode,
   ) overlayBuilder;
   final double overlayHeight;
   final void Function(OverlayEntry entry) onSelected;
@@ -72,7 +73,8 @@ class _CustomAutoCompleteState extends State<CustomAutoComplete> {
             showWhenUnlinked: false,
             offset: Offset(0, size.height),
             link: _link,
-            child: widget.overlayBuilder(context, entry, widget.onSelected),
+            child: widget.overlayBuilder(
+                context, entry, widget.onSelected, _focusNode),
           ),
         );
       },

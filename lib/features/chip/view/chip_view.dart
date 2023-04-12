@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_chips/config/styles.dart';
@@ -35,95 +34,102 @@ class _ChipViewState<T extends ChipViewModel> extends State<ChipView<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // SelectedBuilder<T>(viewModel: viewModel),
-        SuggestionBuilder<T>(),
-        SizedBox(
-          height: 100,
-        ),
-        Consumer<T>(
-          builder: (context, value, child) {
-            return CustomAutoComplete(
-              onSelected: (entry) {
-                log('selected');
-                if (entry.mounted) {
-                  entry.remove();
-                }
-              },
-              onFocusChanged: (focusNode, entry) {
-                log('hasFocus : ${focusNode.hasFocus}');
-                if (focusNode.hasFocus) {
-                  Overlay.of(context).insert(entry);
-                }
-              },
-              overlayHeight: 200,
-              showOverlay: () => value.isFocused,
-              overlayBuilder: (context, entry, onSelected) {
-                return ListView.builder(
-                  itemCount: value.nonSelected.length,
-                  itemBuilder: (context, index) {
-                    return Material(
-                      child: ListTile(
-                        onTap: () {
-                          log('selected ${value.nonSelected[index]}');
-                          value.selectedEvent(value.nonSelected[index]);
-                        },
-                        title: Text(value.nonSelected[index].value),
-                      ),
-                    );
-                  },
-                );
-              },
-              fieldBuilder: (context, focusNode, controller) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: defaultPadding * 0.2,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    borderRadius: BorderRadius.circular(defaultRadius),
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    controller: _scrollController,
-                    child: Row(
-                      children: [
-                        SelectedBuilder<T>(),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: RawKeyboardListener(
-                            onKey: (keyEvent) {
-                              if (keyEvent.isKeyPressed(
-                                LogicalKeyboardKey.backspace,
-                              )) {
-                                if (controller.text.isEmpty &&
-                                    value.selected.isNotEmpty) {
-                                  value.removeEvent(value.selected.last);
-                                }
-                              }
-                            },
-                            focusNode: focusNode,
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                isDense: true,
-                                border: InputBorder.none,
+    return Consumer<T>(
+      builder: (context, value, child) {
+        return CustomAutoComplete(
+          onSelected: (entry) {
+            log('selected');
+            if (entry.mounted) {
+              entry.remove();
+            }
+          },
+          onFocusChanged: (focusNode, entry) {
+            log('hasFocus : ${focusNode.hasFocus}');
+            if (focusNode.hasFocus) {
+              if (!entry.mounted) {
+                Overlay.of(context).insert(entry);
+              }
+            }
+          },
+          overlayHeight: 120,
+          showOverlay: () => value.isFocused,
+          overlayBuilder: (context, entry, onSelected, focusNode) {
+            return Material(
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: defaultPadding),
+                    child: Wrap(
+                      clipBehavior: Clip.hardEdge,
+                      children: value.nonSelected
+                          .map(
+                            (e) => Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: InkWell(
+                                onTap: () {
+                                  value.selectedEvent(e);
+                                  focusNode.requestFocus();
+                                },
+                                child: Chip(
+                                  label: Text(e.value),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      ],
+                          )
+                          .toList(),
                     ),
                   ),
-                );
-              },
+                ),
+              ),
             );
           },
-        ),
-      ],
+          fieldBuilder: (context, focusNode, controller) {
+            return Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: defaultPadding * 0.2,
+              ),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                borderRadius: BorderRadius.circular(defaultRadius),
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                controller: _scrollController,
+                child: Row(
+                  children: [
+                    SelectedBuilder<T>(),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: RawKeyboardListener(
+                        onKey: (keyEvent) {
+                          if (keyEvent.isKeyPressed(
+                            LogicalKeyboardKey.backspace,
+                          )) {
+                            if (controller.text.isEmpty &&
+                                value.selected.isNotEmpty) {
+                              value.removeEvent(value.selected.last);
+                            }
+                          }
+                        },
+                        focusNode: focusNode,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            isDense: true,
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
