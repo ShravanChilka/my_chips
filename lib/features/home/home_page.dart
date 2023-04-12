@@ -1,6 +1,7 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:my_chips/features/chip/view/chip_view.dart';
+import 'package:my_chips/features/chip/view_model/chip_view_model.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -8,18 +9,13 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.amber.shade100,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              height: 200,
-              color: Colors.blue,
-            ),
             TestWidget(),
-            Container(
-              height: 1000,
-              color: Colors.blue,
-            ),
+            SizedBox(height: 100),
+            ChipView<ChipViewModelFrameworks>(),
           ],
         ),
       ),
@@ -58,15 +54,18 @@ class _TestWidgetState extends State<TestWidget> {
   void dispose() {
     _link.leader?.dispose();
     _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
-  showOverlay() {
+  void showOverlay() {
     final overlay = Overlay.of(context);
     final renderBox = _key.currentContext?.findRenderObject() as RenderBox;
     final size = renderBox.size;
     final offset = renderBox.globalToLocal(Offset.zero);
+
     entry = OverlayEntry(
+      maintainState: true,
       builder: (context) {
         return Positioned(
           width: size.width,
@@ -79,7 +78,11 @@ class _TestWidgetState extends State<TestWidget> {
               itemBuilder: (context, index) {
                 return Material(
                   child: ListTile(
-                    onTap: () {},
+                    onTap: () {
+                      _controller.text = 'Person $index';
+                      log('Person $index');
+                      hideOverlay();
+                    },
                     title: Text('Person $index'),
                   ),
                 );
@@ -91,12 +94,17 @@ class _TestWidgetState extends State<TestWidget> {
     );
   }
 
+  void hideOverlay() {
+    entry.remove();
+  }
+
   void onfocusEvent() {
     if (_focusNode.hasFocus) {
       Overlay.of(context).insert(entry);
     } else {
-      entry.remove();
+      // entry.remove();
     }
+    log('focusEvent : ${_focusNode.hasFocus}');
   }
 
   @override

@@ -99,24 +99,19 @@ class _SuggestionBuilderState<T extends ChipViewModel>
             );
           },
           optionsViewBuilder: (context, onSelected, options) {
-            return Container(
-              color: Colors.red,
-              width: 200,
-              height: 200,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: options.length,
-                itemBuilder: (context, index) {
-                  return Material(
-                    child: ListTile(
-                      onTap: () => onSelected(
-                        options.elementAt(index),
-                      ),
-                      title: Text(options.elementAt(index).value),
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: options.length,
+              itemBuilder: (context, index) {
+                return Material(
+                  child: ListTile(
+                    onTap: () => onSelected(
+                      options.elementAt(index),
                     ),
-                  );
-                },
-              ),
+                    title: Text(options.elementAt(index).value),
+                  ),
+                );
+              },
             );
           },
           optionsBuilder: (textEditingValue) {

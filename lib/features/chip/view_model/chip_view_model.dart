@@ -38,6 +38,7 @@ abstract class ChipViewModel extends ChangeNotifier {
     _nonSelected.remove(value);
     _selected.add(value);
     notifyListeners();
+    log('selected event $_selected');
   }
 
   void removeEvent(ChipModel value) {
@@ -52,6 +53,7 @@ abstract class ChipViewModel extends ChangeNotifier {
     } else {
       _isFocused = false;
     }
+    log('focused : $isFocused');
     notifyListeners();
   }
 }
