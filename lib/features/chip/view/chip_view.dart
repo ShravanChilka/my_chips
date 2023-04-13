@@ -14,39 +14,45 @@ class ChipView extends StatelessWidget {
         title: const Text('My Chips'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Padding(
-          padding: const EdgeInsets.all(defaultPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 60),
-              Text(
-                'Frameworks',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: defaultPadding * 0.5),
-              const AutoSuggessionBuilder<ChipViewModelFrameworks>(),
-              const SizedBox(height: defaultPadding * 0.5),
-              const ItemCountWidget<ChipViewModelFrameworks>(),
-              const SizedBox(height: 100),
-              Text(
-                'Languages',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: defaultPadding * 0.5),
-              const AutoSuggessionBuilder<ChipViewModelLanguages>(),
-              const SizedBox(height: defaultPadding * 0.5),
-              const ItemCountWidget<ChipViewModelLanguages>(),
-              const SizedBox(height: 500),
-            ],
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Padding(
+            padding: const EdgeInsets.all(defaultPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 60),
+                Text(
+                  'Frameworks',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: defaultPadding * 0.5),
+                const AutoSuggessionBuilder<ChipViewModelFrameworks>(),
+                const SizedBox(height: defaultPadding * 0.5),
+                const ItemCountWidget<ChipViewModelFrameworks>(),
+                const SizedBox(height: 100),
+                Text(
+                  'Languages',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: defaultPadding * 0.5),
+                const AutoSuggessionBuilder<ChipViewModelLanguages>(),
+                const SizedBox(height: defaultPadding * 0.5),
+                const ItemCountWidget<ChipViewModelLanguages>(),
+                const SizedBox(height: 500),
+              ],
+            ),
           ),
         ),
       ),
