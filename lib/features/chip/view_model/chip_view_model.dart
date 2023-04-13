@@ -10,7 +10,9 @@ abstract class ChipViewModel extends ChangeNotifier {
   final List<ChipModel> _nonSelected = [];
   final List<ChipModel> _all = [];
   ScrollController? _scrollController;
-  TextEditingController? _textEditingController;
+  TextEditingController? textEditingController;
+  FocusNode? _focusNode;
+  bool _showOverlay = false;
 
   final ChipWebService _service;
   ChipViewModel({
@@ -21,8 +23,9 @@ abstract class ChipViewModel extends ChangeNotifier {
     _scrollController = value;
   }
 
-  set textEditingController(TextEditingController value) {
-    _textEditingController = value;
+  set showOverlay(bool value) {
+    _showOverlay = value;
+    notifyListeners();
   }
 
   Future<void> init({
@@ -42,12 +45,13 @@ abstract class ChipViewModel extends ChangeNotifier {
   List<ChipModel> get selected => _selected;
   List<ChipModel> get nonSelected => _nonSelected;
   List<ChipModel> get all => _all;
+  bool get showOverlay => _showOverlay;
 
   void selectedEvent(ChipModel value) {
     _nonSelected.remove(value);
     _selected.add(value);
     animateScroll(200);
-    _textEditingController?.text = '';
+    textEditingController?.text = '';
     onTextChangeEvent('');
     notifyListeners();
   }
@@ -105,7 +109,11 @@ abstract class ChipViewModel extends ChangeNotifier {
     for (ChipModel chip in _selected) {
       _nonSelected.removeWhere((element) => element == chip);
     }
-
+    if (value.isEmpty && _nonSelected.isEmpty) {
+      showOverlay = false;
+    } else {
+      showOverlay = true;
+    }
     notifyListeners();
   }
 }

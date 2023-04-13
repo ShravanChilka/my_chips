@@ -19,39 +19,34 @@ class AutoSuggessionBuilder<T extends ChipViewModel> extends StatefulWidget {
 class _AutoSuggessionBuilderState<T extends ChipViewModel>
     extends State<AutoSuggessionBuilder<T>> {
   late final OverlayEntry overlayEntry;
-  late final LayerLink _layerLink;
-  late final FocusNode _focusNode;
-  late final GlobalKey _widgetKey;
-  late final TextEditingController _controller;
-  late final ScrollController _scrollController;
+  final LayerLink layerLink = LayerLink();
+  final FocusNode focusNode = FocusNode();
+  final GlobalKey widgetKey = GlobalKey();
+  final TextEditingController controller = TextEditingController();
+  final ScrollController scrollController = ScrollController();
+  final ScrollController suggestionScrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode();
-    _widgetKey = GlobalKey();
-    _layerLink = LayerLink();
-    _controller = TextEditingController();
-    _scrollController = ScrollController();
-    context.read<T>().scrollController = _scrollController;
-    context.read<T>().textEditingController = _controller;
+    context.read<T>().scrollController = scrollController;
+    context.read<T>().textEditingController = controller;
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => buildOverlay(),
     );
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) {
-        showOverlay();
-      } else {
-        hideOverlay();
-      }
-    });
+    focusNode.addListener(onFocusNodeEvent);
+  }
+
+  void onFocusNodeEvent() {
+    focusNode.hasFocus ? showOverlay() : hideOverlay();
   }
 
   void buildOverlay() {
     overlayEntry = CustomOverlayEntry<T>(
-      widgetKey: _widgetKey,
+      widgetKey: widgetKey,
       overlayHeight: widget.overlayHeight,
-      layerLink: _layerLink,
+      layerLink: layerLink,
+      scrollController: suggestionScrollController,
     );
   }
 
@@ -62,26 +57,33 @@ class _AutoSuggessionBuilderState<T extends ChipViewModel>
   }
 
   void hideOverlay() {
+    scrollController.animateTo(
+      scrollController.position.minScrollExtent,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.fastOutSlowIn,
+    );
     overlayEntry.remove();
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomSearchField<T>(
-      layerLink: _layerLink,
-      widgetKey: _widgetKey,
-      scrollController: _scrollController,
-      controller: _controller,
-      focusNode: _focusNode,
+      layerLink: layerLink,
+      widgetKey: widgetKey,
+      scrollController: scrollController,
+      controller: controller,
+      focusNode: focusNode,
     );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
-    _scrollController.dispose();
-    _focusNode.dispose();
-    _layerLink.leader?.dispose();
+    overlayEntry.dispose();
+    controller.dispose();
+    scrollController.dispose();
+    suggestionScrollController.dispose();
+    focusNode.dispose();
+    layerLink.leader?.dispose();
     super.dispose();
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:my_chips/config/styles.dart';
 import 'package:my_chips/features/chip/view/chip_view.dart';
 import 'package:my_chips/features/chip/view_model/chip_view_model.dart';
-import 'package:my_chips/features/unused/home_page.dart';
 import 'package:provider/provider.dart';
 
 void application() {

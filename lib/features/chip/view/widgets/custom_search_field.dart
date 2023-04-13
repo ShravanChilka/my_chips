@@ -34,30 +34,33 @@ class CustomSearchField<T extends ChipViewModel> extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(defaultRadius),
         ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
+        child: Scrollbar(
+          thumbVisibility: true,
           controller: scrollController,
-          child: Row(
-            children: [
-              SelectedBuilder<T>(),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: RawKeyboardListener(
-                  onKey: (keyEvent) =>
-                      context.read<T>().onRawKeyEvent(keyEvent, controller),
-                  focusNode: focusNode,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      isDense: true,
-                      border: InputBorder.none,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            controller: scrollController,
+            child: Row(
+              children: [
+                SelectedBuilder<T>(),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: RawKeyboardListener(
+                    onKey: (keyEvent) =>
+                        context.read<T>().onRawKeyEvent(keyEvent, controller),
+                    focusNode: focusNode,
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        border: InputBorder.none,
+                      ),
+                      controller: controller,
+                      onChanged: context.read<T>().onTextChangeEvent,
                     ),
-                    controller: controller,
-                    onChanged: (query) =>
-                        context.read<T>().onTextChangeEvent(query),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
