@@ -1,135 +1,55 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:my_chips/config/styles.dart';
-import 'package:my_chips/features/chip/view/widgets/custom_auto_complete.dart';
-import 'package:my_chips/features/chip/view/widgets/selected_builder.dart';
-import 'package:my_chips/features/chip/view/widgets/suggestion_builder.dart';
+import 'package:my_chips/features/chip/view/widgets/auto_suggession_builder.dart';
+import 'package:my_chips/features/chip/view/widgets/item_count_widget.dart';
 import 'package:my_chips/features/chip/view_model/chip_view_model.dart';
-import 'package:provider/provider.dart';
 
-class ChipView<T extends ChipViewModel> extends StatefulWidget {
-  const ChipView({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<ChipView<T>> createState() => _ChipViewState<T>();
-}
-
-class _ChipViewState<T extends ChipViewModel> extends State<ChipView<T>> {
-  late final ScrollController _scrollController;
-
-  @override
-  void initState() {
-    _scrollController = ScrollController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+class ChipView extends StatelessWidget {
+  const ChipView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<T>(
-      builder: (context, value, child) {
-        return CustomAutoComplete(
-          onSelected: (entry) {
-            log('selected');
-            if (entry.mounted) {
-              entry.remove();
-            }
-          },
-          onFocusChanged: (focusNode, entry) {
-            log('hasFocus : ${focusNode.hasFocus}');
-            if (focusNode.hasFocus) {
-              if (!entry.mounted) {
-                Overlay.of(context).insert(entry);
-              }
-            }
-          },
-          overlayHeight: 120,
-          showOverlay: () => value.isFocused,
-          overlayBuilder: (context, entry, onSelected, focusNode) {
-            return Material(
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: defaultPadding),
-                    child: Wrap(
-                      clipBehavior: Clip.hardEdge,
-                      children: value.nonSelected
-                          .map(
-                            (e) => Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: InkWell(
-                                onTap: () {
-                                  value.selectedEvent(e);
-                                  focusNode.requestFocus();
-                                },
-                                child: Chip(
-                                  label: Text(e.value),
-                                ),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My Chips'),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: const EdgeInsets.all(defaultPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 60),
+              Text(
+                'Frameworks',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
-            );
-          },
-          fieldBuilder: (context, focusNode, controller) {
-            return Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: defaultPadding * 0.2,
+              const SizedBox(height: defaultPadding * 0.5),
+              const AutoSuggessionBuilder<ChipViewModelFrameworks>(),
+              const SizedBox(height: defaultPadding * 0.5),
+              const ItemCountWidget<ChipViewModelFrameworks>(),
+              const SizedBox(height: 100),
+              Text(
+                'Languages',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                borderRadius: BorderRadius.circular(defaultRadius),
-              ),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                controller: _scrollController,
-                child: Row(
-                  children: [
-                    SelectedBuilder<T>(),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: RawKeyboardListener(
-                        onKey: (keyEvent) {
-                          if (keyEvent.isKeyPressed(
-                            LogicalKeyboardKey.backspace,
-                          )) {
-                            if (controller.text.isEmpty &&
-                                value.selected.isNotEmpty) {
-                              value.removeEvent(value.selected.last);
-                            }
-                          }
-                        },
-                        focusNode: focusNode,
-                        child: TextFormField(
-                          decoration: const InputDecoration(
-                            isDense: true,
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
+              const SizedBox(height: defaultPadding * 0.5),
+              const AutoSuggessionBuilder<ChipViewModelLanguages>(),
+              const SizedBox(height: defaultPadding * 0.5),
+              const ItemCountWidget<ChipViewModelLanguages>(),
+              const SizedBox(height: 500),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

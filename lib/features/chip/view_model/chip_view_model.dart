@@ -9,12 +9,21 @@ abstract class ChipViewModel extends ChangeNotifier {
   final List<ChipModel> _selected = [];
   final List<ChipModel> _nonSelected = [];
   final List<ChipModel> _all = [];
-  bool _isFocused = false;
+  ScrollController? _scrollController;
+  TextEditingController? _textEditingController;
 
   final ChipWebService _service;
   ChipViewModel({
     required ChipWebService service,
   }) : _service = service;
+
+  set scrollController(ScrollController value) {
+    _scrollController = value;
+  }
+
+  set textEditingController(TextEditingController value) {
+    _textEditingController = value;
+  }
 
   Future<void> init({
     required String url,
@@ -33,19 +42,29 @@ abstract class ChipViewModel extends ChangeNotifier {
   List<ChipModel> get selected => _selected;
   List<ChipModel> get nonSelected => _nonSelected;
   List<ChipModel> get all => _all;
-  bool get isFocused => _isFocused;
 
   void selectedEvent(ChipModel value) {
     _nonSelected.remove(value);
     _selected.add(value);
+    animateScroll(200);
+    _textEditingController?.text = '';
+    onTextChangeEvent('');
     notifyListeners();
-    log('selected event $_selected');
+  }
+
+  void animateScroll(int value) {
+    _scrollController?.animateTo(
+      _scrollController!.position.maxScrollExtent - value,
+      curve: Curves.fastOutSlowIn,
+      duration: const Duration(milliseconds: 400),
+    );
   }
 
   void removeEvent(ChipModel value) {
     _selected.remove(value);
     _nonSelected.add(value);
     notifyListeners();
+    animateScroll(400);
   }
 
   void onRawKeyEvent(
@@ -64,23 +83,29 @@ abstract class ChipViewModel extends ChangeNotifier {
   void onTextChangeEvent(
     String value,
   ) {
-    _nonSelected.clear();
-    _nonSelected.addAll(
-      _nonSelected
-          .where((element) =>
-              element.value.toLowerCase().contains(value.toLowerCase()))
-          .toList(),
-    );
-    notifyListeners();
-  }
-
-  void focusEvents(FocusNode focusNode) {
-    if (focusNode.hasFocus) {
-      _isFocused = true;
+    if (value.isEmpty && _nonSelected.isNotEmpty) {
+      _nonSelected.clear();
+      _nonSelected.addAll(_all);
     } else {
-      _isFocused = false;
+      _nonSelected.clear();
+      _nonSelected.addAll(
+        _all
+            .where(
+              (element) =>
+                  element.value.toLowerCase().contains(value.toLowerCase()),
+            )
+            .toList()
+          ..sort(
+            (a, b) => a.value.toLowerCase().indexOf(value).compareTo(
+                  b.value.toLowerCase().indexOf(value),
+                ),
+          ),
+      );
     }
-    log('focused : $isFocused');
+    for (ChipModel chip in _selected) {
+      _nonSelected.removeWhere((element) => element == chip);
+    }
+
     notifyListeners();
   }
 }

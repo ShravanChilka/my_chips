@@ -19,7 +19,7 @@ class SelectedBuilder<T extends ChipViewModel> extends StatelessWidget {
                 (e) => Padding(
                   padding: const EdgeInsets.all(2.0),
                   child: ChipWidget(
-                    value: e.value,
+                    chipModel: e,
                     onDeleted: () {
                       value.removeEvent(e);
                     },

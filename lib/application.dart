@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:my_chips/config/styles.dart';
+import 'package:my_chips/features/chip/view/chip_view.dart';
 import 'package:my_chips/features/chip/view_model/chip_view_model.dart';
-import 'package:my_chips/features/home/home_page.dart';
+import 'package:my_chips/features/unused/home_page.dart';
 import 'package:provider/provider.dart';
 
-void application() => runApp(const Application());
+void application() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const Application());
+}
 
 class Application extends StatelessWidget {
   const Application({Key? key}) : super(key: key);
@@ -36,7 +40,7 @@ class Application extends StatelessWidget {
           useMaterial3: true,
           colorScheme: darkColorScheme,
         ),
-        home: const HomePage(),
+        home: const ChipView(),
       ),
     );
   }

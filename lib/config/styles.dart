@@ -4,6 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 const double defaultPadding = 16;
 const double defaultRadius = 16;
 
+class Palette {
+  static Color orange = const Color(0XFFf9dcc4);
+  static Color green = const Color(0XFFb2f7ef);
+  static Color purple = const Color(0XFFffcbf2);
+}
+
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
   primary: Color(0xFF6750A4),
@@ -23,7 +29,7 @@ const lightColorScheme = ColorScheme(
   errorContainer: Color(0xFFF9DEDC),
   onErrorContainer: Color(0xFF410E0B),
   outline: Color(0xFF79747E),
-  background: Color(0xFFFFFBFE),
+  background: Color(0xFFf0efeb),
   onBackground: Color(0xFF1C1B1F),
   surface: Color(0xFFFFFBFE),
   onSurface: Color(0xFF1C1B1F),

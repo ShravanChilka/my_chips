@@ -24,6 +24,8 @@ mixin _$ChipModel {
   String get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'value')
   String get value => throw _privateConstructorUsedError;
+  @JsonKey(name: 'difficulty')
+  Difficulty get difficulty => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -37,7 +39,9 @@ abstract class $ChipModelCopyWith<$Res> {
       _$ChipModelCopyWithImpl<$Res, ChipModel>;
   @useResult
   $Res call(
-      {@JsonKey(name: '_id') String id, @JsonKey(name: 'value') String value});
+      {@JsonKey(name: '_id') String id,
+      @JsonKey(name: 'value') String value,
+      @JsonKey(name: 'difficulty') Difficulty difficulty});
 }
 
 /// @nodoc
@@ -55,6 +59,7 @@ class _$ChipModelCopyWithImpl<$Res, $Val extends ChipModel>
   $Res call({
     Object? id = null,
     Object? value = null,
+    Object? difficulty = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -65,6 +70,10 @@ class _$ChipModelCopyWithImpl<$Res, $Val extends ChipModel>
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
               as String,
+      difficulty: null == difficulty
+          ? _value.difficulty
+          : difficulty // ignore: cast_nullable_to_non_nullable
+              as Difficulty,
     ) as $Val);
   }
 }
@@ -77,7 +86,9 @@ abstract class _$$_ChipModelCopyWith<$Res> implements $ChipModelCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: '_id') String id, @JsonKey(name: 'value') String value});
+      {@JsonKey(name: '_id') String id,
+      @JsonKey(name: 'value') String value,
+      @JsonKey(name: 'difficulty') Difficulty difficulty});
 }
 
 /// @nodoc
@@ -93,6 +104,7 @@ class __$$_ChipModelCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? value = null,
+    Object? difficulty = null,
   }) {
     return _then(_$_ChipModel(
       id: null == id
@@ -103,6 +115,10 @@ class __$$_ChipModelCopyWithImpl<$Res>
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
               as String,
+      difficulty: null == difficulty
+          ? _value.difficulty
+          : difficulty // ignore: cast_nullable_to_non_nullable
+              as Difficulty,
     ));
   }
 }
@@ -112,7 +128,8 @@ class __$$_ChipModelCopyWithImpl<$Res>
 class _$_ChipModel implements _ChipModel {
   const _$_ChipModel(
       {@JsonKey(name: '_id') required this.id,
-      @JsonKey(name: 'value') required this.value});
+      @JsonKey(name: 'value') required this.value,
+      @JsonKey(name: 'difficulty') required this.difficulty});
 
   factory _$_ChipModel.fromJson(Map<String, dynamic> json) =>
       _$$_ChipModelFromJson(json);
@@ -123,10 +140,13 @@ class _$_ChipModel implements _ChipModel {
   @override
   @JsonKey(name: 'value')
   final String value;
+  @override
+  @JsonKey(name: 'difficulty')
+  final Difficulty difficulty;
 
   @override
   String toString() {
-    return 'ChipModel(id: $id, value: $value)';
+    return 'ChipModel(id: $id, value: $value, difficulty: $difficulty)';
   }
 
   @override
@@ -135,12 +155,14 @@ class _$_ChipModel implements _ChipModel {
         (other.runtimeType == runtimeType &&
             other is _$_ChipModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.value, value) || other.value == value));
+            (identical(other.value, value) || other.value == value) &&
+            (identical(other.difficulty, difficulty) ||
+                other.difficulty == difficulty));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, value);
+  int get hashCode => Object.hash(runtimeType, id, value, difficulty);
 
   @JsonKey(ignore: true)
   @override
@@ -158,8 +180,10 @@ class _$_ChipModel implements _ChipModel {
 
 abstract class _ChipModel implements ChipModel {
   const factory _ChipModel(
-      {@JsonKey(name: '_id') required final String id,
-      @JsonKey(name: 'value') required final String value}) = _$_ChipModel;
+          {@JsonKey(name: '_id') required final String id,
+          @JsonKey(name: 'value') required final String value,
+          @JsonKey(name: 'difficulty') required final Difficulty difficulty}) =
+      _$_ChipModel;
 
   factory _ChipModel.fromJson(Map<String, dynamic> json) =
       _$_ChipModel.fromJson;
@@ -170,6 +194,9 @@ abstract class _ChipModel implements ChipModel {
   @override
   @JsonKey(name: 'value')
   String get value;
+  @override
+  @JsonKey(name: 'difficulty')
+  Difficulty get difficulty;
   @override
   @JsonKey(ignore: true)
   _$$_ChipModelCopyWith<_$_ChipModel> get copyWith =>

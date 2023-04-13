@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:my_chips/config/styles.dart';
-import 'package:my_chips/features/chip/view/chip_view.dart';
 import 'package:my_chips/features/chip/view/widgets/auto_suggession_builder.dart';
 import 'package:my_chips/features/chip/view_model/chip_view_model.dart';
 
@@ -11,17 +10,33 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.amber.shade100,
+      appBar: AppBar(),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(defaultPadding),
-          child: Column(
-            children: const [
-              SizedBox(height: 100),
-              AutoSuggessionBuilder<ChipViewModelFrameworks>(),
-              SizedBox(height: 100),
-              AutoSuggessionBuilder<ChipViewModelLanguages>(),
-            ],
+        scrollDirection: Axis.vertical,
+        child: GestureDetector(
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.all(defaultPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 100),
+                Text(
+                  'Select Frameworks',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const AutoSuggessionBuilder<ChipViewModelFrameworks>(),
+                const SizedBox(height: 200),
+                Text(
+                  'Select Languages',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const AutoSuggessionBuilder<ChipViewModelLanguages>(),
+                const SizedBox(height: 500),
+                // SuggesionWidget<ChipViewModelLanguages>()
+                // TestWidget(),
+              ],
+            ),
           ),
         ),
       ),
@@ -73,26 +88,30 @@ class _TestWidgetState extends State<TestWidget> {
     entry = OverlayEntry(
       maintainState: true,
       builder: (context) {
-        return Positioned(
-          width: size.width,
-          height: 200,
-          child: CompositedTransformFollower(
-            offset: Offset(0, size.height),
-            link: _link,
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return Material(
-                  child: ListTile(
-                    onTap: () {
-                      _controller.text = 'Person $index';
-                      log('Person $index');
-                      hideOverlay();
-                    },
-                    title: Text('Person $index'),
-                  ),
-                );
-              },
+        return CompositedTransformFollower(
+          targetAnchor: Alignment.bottomLeft,
+          // followerAnchor: Alignment.bottomLeft,
+          // offset: Offset(0, size.height),
+          link: _link,
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: 200,
+              child: ListView.builder(
+                itemCount: 10,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Material(
+                    child: ListTile(
+                      onTap: () {
+                        _controller.text = 'Person $index';
+                        log('Person $index');
+                        // hideOverlay();
+                      },
+                      title: Text('Person $index'),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         );
@@ -108,7 +127,7 @@ class _TestWidgetState extends State<TestWidget> {
     if (_focusNode.hasFocus) {
       Overlay.of(context).insert(entry);
     } else {
-      // entry.remove();
+      entry.remove();
     }
     log('focusEvent : ${_focusNode.hasFocus}');
   }

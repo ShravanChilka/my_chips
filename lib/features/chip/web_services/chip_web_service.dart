@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:my_chips/core/errors/errors.dart';
 import 'package:my_chips/features/chip/models/chip_model.dart';
+import 'package:my_chips/features/chip/view/utils/mock_api.dart';
 
 //! RUN THE LIVE Extension in VSCODE : ritwickdey.LiveServer
 
@@ -15,15 +16,10 @@ abstract class ChipWebService {
     required String url,
   }) async {
     try {
-      final response = await client.get(url);
-      if (response.statusCode == 200) {
-        return (response.data as List<dynamic>)
-            .map((e) => ChipModel.fromJson(e))
-            .toList();
+      if (url.contains('frameworks')) {
+        return frameworks.map((e) => ChipModel.fromJson(e)).toList();
       } else {
-        throw RemoteException(
-          error: 'invalid status code : ${response.statusCode}',
-        );
+        return languages.map((e) => ChipModel.fromJson(e)).toList();
       }
     } catch (e) {
       throw RemoteException(error: e.toString());

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:my_chips/config/styles.dart';
-import 'package:my_chips/features/chip/view/widgets/chip_widget.dart';
-import 'package:my_chips/features/chip/view/widgets/selected_builder.dart';
+import 'package:my_chips/features/chip/view/widgets/custom_overlay.dart';
+import 'package:my_chips/features/chip/view/widgets/custom_search_field.dart';
 import 'package:my_chips/features/chip/view_model/chip_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +8,7 @@ class AutoSuggessionBuilder<T extends ChipViewModel> extends StatefulWidget {
   final double overlayHeight;
   const AutoSuggessionBuilder({
     super.key,
-    this.overlayHeight = 100,
+    this.overlayHeight = 120,
   });
 
   @override
@@ -20,10 +18,10 @@ class AutoSuggessionBuilder<T extends ChipViewModel> extends StatefulWidget {
 
 class _AutoSuggessionBuilderState<T extends ChipViewModel>
     extends State<AutoSuggessionBuilder<T>> {
-  late final OverlayEntry entry;
-  late final LayerLink _link;
+  late final OverlayEntry overlayEntry;
+  late final LayerLink _layerLink;
   late final FocusNode _focusNode;
-  late final GlobalKey _key;
+  late final GlobalKey _widgetKey;
   late final TextEditingController _controller;
   late final ScrollController _scrollController;
 
@@ -31,129 +29,59 @@ class _AutoSuggessionBuilderState<T extends ChipViewModel>
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-    _key = GlobalKey();
-    _link = LayerLink();
+    _widgetKey = GlobalKey();
+    _layerLink = LayerLink();
     _controller = TextEditingController();
     _scrollController = ScrollController();
+    context.read<T>().scrollController = _scrollController;
+    context.read<T>().textEditingController = _controller;
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => buildOverlay(),
     );
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
-        Overlay.of(context).insert(entry);
+        showOverlay();
       } else {
-        entry.remove();
+        hideOverlay();
       }
     });
   }
 
   void buildOverlay() {
-    final renderBox = _key.currentContext?.findRenderObject() as RenderBox;
-    final size = renderBox.size;
-    entry = OverlayEntry(
-      builder: (context) {
-        return Positioned(
-          width: size.width,
-          height: widget.overlayHeight,
-          child: CompositedTransformFollower(
-            showWhenUnlinked: false,
-            offset: Offset(0, size.height),
-            link: _link,
-            child: Consumer<T>(
-              builder: (context, value, child) {
-                return Material(
-                  child: Wrap(
-                    children: value.nonSelected
-                        .map(
-                          (e) => InkWell(
-                            onTap: () {
-                              value.selectedEvent(e);
-                              _focusNode.requestFocus();
-                            },
-                            child: ChipWidget(value: e.value),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                );
-              },
-            ),
-          ),
-        );
-      },
+    overlayEntry = CustomOverlayEntry<T>(
+      widgetKey: _widgetKey,
+      overlayHeight: widget.overlayHeight,
+      layerLink: _layerLink,
     );
   }
 
   void showOverlay() {
-    if (!entry.mounted) {
-      Overlay.of(context).insert(entry);
+    if (!overlayEntry.mounted) {
+      Overlay.of(context).insert(overlayEntry);
     }
   }
 
   void hideOverlay() {
-    entry.remove();
+    overlayEntry.remove();
   }
 
   @override
   Widget build(BuildContext context) {
-    return CompositedTransformTarget(
-      link: _link,
-      key: _key,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: defaultPadding * 0.2,
-        ),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          borderRadius: BorderRadius.circular(defaultRadius),
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          controller: _scrollController,
-          child: Row(
-            children: [
-              SelectedBuilder<T>(),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Consumer<T>(
-                  builder: (context, value, child) {
-                    return RawKeyboardListener(
-                      onKey: (keyEvent) {
-                        if (keyEvent.isKeyPressed(
-                          LogicalKeyboardKey.backspace,
-                        )) {
-                          if (_controller.text.isEmpty &&
-                              value.selected.isNotEmpty) {
-                            value.removeEvent(value.selected.last);
-                          }
-                        }
-                      },
-                      focusNode: _focusNode,
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          border: InputBorder.none,
-                        ),
-                        controller: _controller,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return CustomSearchField<T>(
+      layerLink: _layerLink,
+      widgetKey: _widgetKey,
+      scrollController: _scrollController,
+      controller: _controller,
+      focusNode: _focusNode,
     );
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _scrollController.dispose();
     _focusNode.dispose();
-    _link.leader?.dispose();
+    _layerLink.leader?.dispose();
     super.dispose();
   }
 }
